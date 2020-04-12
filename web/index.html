@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="description" content="Dance steps">
+	<meta name="author" content="José Miguel Horcas">
+
+	<link href="css/style.css" rel="stylesheet">
+</head>
+
+<body>
+
+Step file: <input type="file" name="file" id="file">
+Time (s): <input type="number" id="seconds" name="seconds" min="1" max="60" value="3">
+Hour: <span id="time"></span>
+
+<span id="step"></span>
+
+<button id="start">Play</button>
+<button id="stop">Stop</button>
+
+<script>
+var status = null;
+var danceSteps = null;
+
+document.getElementById("start").onclick = function(){start();};
+document.getElementById("stop").onclick = function(){stop();};
+document.getElementById('seconds').onchange = function(){stop();start();};
+
+function start() {
+	var seconds = document.getElementById('seconds').value
+	status = setInterval(showDanceSteps, seconds*1000);
+}
+
+function stop() {
+	clearInterval(status);
+}
+
+function showDanceSteps() {
+  var d = new Date();
+  document.getElementById("time").innerHTML = d.toLocaleTimeString();
+  if (danceSteps != null) {
+	var stepNumber = getRndInteger(0, danceSteps.length);
+	document.getElementById("step").innerHTML = danceSteps[stepNumber];
+  }
+}
+
+// Random number between min and max (both included)
+function getRndInteger(min, max) {
+  return Math.floor(Math.random() * (max - min + 1) ) + min;
+}
+
+document.getElementById('file').onchange = function(){
+  var file = this.files[0];
+
+  var reader = new FileReader();
+  reader.onload = function(progressEvent){
+    danceSteps = this.result.split('\n');
+  };
+  reader.readAsText(file);
+};
+</script>
+
+	<script src="js/danceSteps.js"></script>
+</body>
+</html>
